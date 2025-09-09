@@ -1,0 +1,5 @@
+[
+  {"model": "three.adminuser", "pk": 1, "fields": {"username": "admin1", "password": "pass1"}},
+  {"model": "three.adminuser", "pk": 2, "fields": {"username": "admin2", "password": "pass2"}},
+  {"model": "three.adminuser", "pk": 3, "fields": {"username": "admin3", "password": "pass3"}}
+]

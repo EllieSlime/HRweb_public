@@ -1,0 +1,345 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">TeamSync - Job Application Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100%;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            backdrop-filter: blur(10px);
+        }
+        .page-container {
+            overflow-y: auto;
+            height: calc(100vh - 64px);
+            min-height: calc(100vh - 64px);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #10b981 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #1e40af, #2563eb);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .btn-success {
+            background: linear-gradient(90deg, #059669, #10b981);
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            background: linear-gradient(90deg, #047857, #059669);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <!-- Navigation Bar -->
+    <nav class="navbar fixed top-0 w-full text-white p-4 shadow-lg z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold flex items-center" data-i18n="brand">
+                <i class="fas fa-users mr-2"></i>TeamSync
+            </a>
+            <div class="space-x-4 flex items-center">
+                <a href="#voice-call" class="hover:text-blue-200 flex items-center">
+                    <span class="hidden md:inline"></span>
+                </a>
+                <a href="#home" class="hover:text-blue-200 flex items-center">
+                  <i class="fas fa-home mr-1"></i>
+                  <span data-i18n="home" class="hidden md:inline">Home</span>
+                </a>
+                <a href="#hr-dialog" class="hover:text-blue-200 flex items-center">
+                  <i class="fas fa-calendar-alt mr-1"></i>
+                  <span data-i18n="hrDialog" class="hidden md:inline">Schedule</span>
+                </a>
+
+                <a href="#admin-login" class="hover:text-blue-200 flex items-center">
+                  <i class="fas fa-lock mr-1"></i>
+                  <span data-i18n="adminLogin" class="hidden md:inline">Admin</span>
+                </a>
+                <a href="#" id="lang-toggle" class="hover:text-blue-200 flex items-center">
+                  <i class="fas fa-globe mr-1"></i>
+                  <span data-i18n="languageToggle">RU/EN</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page 1: HR Dialog -->
+    <section id="hr-dialog" class="page-container pt-20 bg-white hidden fade-in">
+      <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-900" data-i18n="schedule"></h1>
+        <div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg card-hover border border-blue-100">
+          <h2 class="text-xl font-semibold mb-4 flex items-center text-blue-800" data-i18n="chat">
+            <i class="fas fa-comments mr-2"></i> HR Chat
+          </h2>
+          <div id="chat-box" class="border border-blue-200 rounded-xl p-4 h-40 overflow-y-auto mb-4 bg-blue-50">
+            <p id="chat-text" class="text-gray-600" data-i18n="chatIntro"></p>
+          </div>
+          <div class="mt-4">
+            <label class="block text-gray-700 mb-2 flex items-center" data-i18n="datetime">
+              <i class="far fa-clock mr-2"></i> Select Date & Time
+            </label>
+            <input id="meeting-time" type="datetime-local"
+                   class="w-full p-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            <button id="schedule-btn"
+                    class="mt-4 w-full btn-primary text-white px-4 py-3 rounded-xl flex items-center justify-center"
+                    data-i18n="scheduleCall">
+              <i class="far fa-calendar-check mr-2"></i> Schedule Call
+            </button>
+          </div>
+          <div class="mt-4">
+            <a href="#voice-call" id="start-now-btn"
+               class="w-full btn-success text-white px-4 py-3 rounded-xl flex items-center justify-center"
+               data-i18n="startNow">
+              <i class="fas fa-phone-alt mr-2"></i> Start Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page 2: Voice Call -->
+    <section id="voice-call" class="page-container pt-20 bg-white hidden fade-in">
+      <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-900 flex items-center justify-center" data-i18n="voiceInterview">
+          <i class="fas fa-microphone mr-3"></i> Voice Interview
+        </h1>
+        <div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg card-hover border border-blue-100 text-center">
+          <h2 class="text-xl font-semibold mb-4 text-blue-800 flex items-center justify-center" data-i18n="ongoingCall">
+            <i class="fas fa-phone-alt mr-2"></i> Ongoing Call
+          </h2>
+          <div id="voice-visual"
+               class="bg-gradient-to-r from-blue-100 to-green-100 h-40 rounded-xl flex items-center justify-center transition-all duration-500 pulse border border-blue-200">
+            <div class="text-center">
+              <i class="fas fa-microphone text-4xl text-blue-600 mb-2"></i>
+              <p id="voice-status" class="text-gray-700 text-lg font-medium" data-i18n="waiting">Waiting to start...</p>
+            </div>
+          </div>
+          <div class="mt-6">
+            <p class="text-gray-600 flex items-center justify-center"><i class="far fa-clock mr-2"></i> <span data-i18n="timer">Timer</span>: <span id="call-timer" class="font-mono">00:00</span></p>
+            <button id="start-record-btn"
+                    class="mt-4 btn-success text-white px-6 py-3 rounded-xl flex items-center justify-center mx-auto"
+                    data-i18n="startRecording">
+              <i class="fas fa-record-vinyl mr-2"></i> Start Recording
+            </button>
+          </div>
+          <audio id="reply-audio" class="hidden"></audio>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page 3: Home Page -->
+    <section id="home" class="page-container pt-20 gradient-bg fade-in">
+        <div class="container mx-auto p-6 text-center">
+            <h1 class="text-4xl font-bold text-white mb-4" data-i18n="welcome">Welcome to TeamSync</h1>
+            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto" data-i18n="teamIntro">The modern platform for job applications and team collaboration</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-tie text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-900" data-i18n="member1"></h3>
+                    <p class="text-gray-600 mt-2" data-i18n="role1"></p>
+                    <a href="#" class="text-blue-600 hover:text-blue-800 mt-3 inline-flex items-center transition" data-i18n="viewResume">
+                        <i class="far fa-file-alt mr-1"></i> View Resume
+                    </a>
+                </div>
+                <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-code text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-900" data-i18n="member2"></h3>
+                    <p class="text-gray-600 mt-2" data-i18n="role2"></p>
+                    <a href="#" class="text-blue-600 hover:text-blue-800 mt-3 inline-flex items-center transition" data-i18n="viewResume">
+                        <i class="far fa-file-alt mr-1"></i> View Resume
+                    </a>
+                </div>
+                <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paint-brush text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-900" data-i18n="member3"></h3>
+                    <p class="text-gray-600 mt-2" data-i18n="role3"></p>
+                    <a href="#" class="text-blue-600 hover:text-blue-800 mt-3 inline-flex items-center transition" data-i18n="viewResume">
+                        <i class="far fa-file-alt mr-1"></i> View Resume
+                    </a>
+                </div>
+                <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg card-hover">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-2xl text-amber-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-900" data-i18n="member4"></h3>
+                    <p class="text-gray-600 mt-2" data-i18n="role4"></p>
+                    <a href="#" class="text-blue-600 hover:text-blue-800 mt-3 inline-flex items-center transition" data-i18n="viewResume">
+                        <i class="far fa-file-alt mr-1"></i> View Resume
+                    </a>
+                </div>
+            </div>
+            <button class="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center mx-auto" data-i18n="contact">
+                <i class="fas fa-envelope mr-2"></i> Contact Us
+            </button>
+        </div>
+    </section>
+
+    <!-- Page 4: Admin Login -->
+    <section id="admin-login" class="page-container pt-20 bg-white hidden fade-in">
+      <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-900 flex items-center justify-center" data-i18n="adminLoginTitle">
+          <i class="fas fa-lock mr-3"></i> Admin Login
+        </h1>
+        <div class="max-w-md mx-auto bg-gradient-to-br from-blue-50 to-green-50 p-8 rounded-xl shadow-lg border border-blue-100">
+          <h2 class="text-xl font-semibold mb-4 flex items-center text-blue-800" data-i18n="secureAccess">
+            <i class="fas fa-shield-alt mr-2"></i> Secure Access
+          </h2>
+          <p class="text-gray-600 mb-6" data-i18n="loginDesc">Please enter your credentials to access the admin panel</p>
+          <form id="admin-login-form" method="post">
+            {% csrf_token %}
+            <div class="space-y-5">
+              <div>
+                <div class="flex items-center border border-blue-200 rounded-xl px-3 bg-white">
+                  <i class="fas fa-user text-blue-500"></i>
+                  <input id="login-username" type="text" name="username" data-i18n-placeholder="usernamePlaceholder"
+                         class="w-full p-3 border-0 rounded-xl focus:ring-0">
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center border border-blue-200 rounded-xl px-3 bg-white">
+                  <i class="fas fa-key text-blue-500"></i>
+                  <input id="login-password" type="password" name="password" data-i18n-placeholder="passwordPlaceholder"
+                         class="w-full p-3 border-0 rounded-xl focus:ring-0">
+                </div>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="captcha" class="mr-2 h-5 w-5 text-blue-600">
+                <label for="captcha" class="text-gray-600" data-i18n="captcha">I'm not a robot</label>
+              </div>
+              <button type="submit"
+                      class="w-full btn-primary text-white px-4 py-3 rounded-xl flex items-center justify-center"
+                      data-i18n="loginCreds">
+                <i class="fas fa-sign-in-alt mr-2"></i> Login
+              </button>
+              <button type="button"
+                      class="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition flex items-center justify-center"
+                      data-i18n="loginSSO">
+                <i class="fas fa-id-badge mr-2"></i> Login with SSO
+              </button>
+              <p id="login-error" class="text-red-600 mt-2 hidden flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i> Error message
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page 5: Admin Room -->
+    <section id="admin-room" class="page-container pt-20 bg-white hidden min-h-screen fade-in">
+      <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-900 flex items-center justify-center" data-i18n="adminDashboard">
+          <i class="fas fa-tachometer-alt mr-3"></i> Admin Dashboard
+        </h1>
+        <div class="max-w-4xl mx-auto bg-gradient-to-br from-blue-50 to-green-50 p-8 rounded-2xl shadow-lg border border-blue-100">
+          <h2 class="text-xl font-semibold mb-6 flex items-center text-blue-800" data-i18n="candidateScreening">
+            <i class="fas fa-search mr-2"></i> Candidate Screening
+          </h2>
+          <label class="block text-gray-700 font-semibold mb-2 flex items-center" data-i18n="vacancyDescription">
+            <i class="far fa-file-alt mr-2"></i> Vacancy Description
+          </label>
+          <textarea id="vacancy-desc" data-i18n-placeholder="vacancyPlaceholder"
+                    class="w-full p-4 border border-blue-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent h-32 mb-6"></textarea>
+
+          <label class="block text-gray-700 font-semibold mb-2 flex items-center" data-i18n="resumeFile">
+            <i class="fas fa-file-upload mr-2"></i> Resume File
+          </label>
+          <div class="mb-6">
+            <label id="resume-label" for="resume-file"
+                   class="cursor-pointer inline-flex items-center justify-center w-full text-center bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-blue-800 transition truncate"
+                   data-i18n="uploadFile">
+              <i class="fas fa-cloud-upload-alt mr-2"></i> Upload Resume (PDF/DOCX)
+            </label>
+            <input id="resume-file" type="file" accept=".docx,.pdf" class="hidden">
+          </div>
+
+          <label class="block text-gray-700 font-semibold mb-2 flex items-center" data-i18n="coverLetter">
+            <i class="far fa-envelope mr-2"></i> Cover Letter
+          </label>
+          <textarea id="cover-letter" data-i18n-placeholder="coverLetterPlaceholder"
+                    class="w-full p-4 border border-blue-200 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent h-24 mb-6"></textarea>
+
+          <button id="analyze-btn"
+                  class="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-blue-800 transition flex items-center justify-center"
+                  data-i18n="submitReview">
+            <i class="fas fa-analytics mr-2"></i> Analyze Candidate
+          </button>
+
+          <div id="status-line" class="mt-4 h-2 rounded hidden bg-blue-200">
+            <div class="h-2 bg-blue-600 rounded transition-all duration-500" style="width: 0%"></div>
+          </div>
+
+          <div id="analysis-result"
+               class="mt-6 p-6 border border-blue-200 rounded-xl bg-white shadow-md opacity-0 transition-opacity duration-700">
+            <h3 class="text-lg font-semibold mb-2 flex items-center text-blue-800" data-i18n="screeningResult">
+              <i class="fas fa-chart-pie mr-2"></i> Screening Result
+            </h3>
+            <p id="result-text" class="text-gray-700"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="{% static 'three/js/lang.js' %}"></script>
+    <script>
+    let currentSection = "home";
+    document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = e.currentTarget.getAttribute('href').substring(1);
+        if (targetId && targetId !== currentSection) {
+          document.getElementById(currentSection).classList.add('hidden');
+          document.getElementById(targetId).classList.remove('hidden');
+          currentSection = targetId;
+        }
+      });
+    });
+    </script>
+    <script src="{% static 'three/js/auth.js' %}"></script>
+    <script src="{% static 'three/js/voice.js' %}"></script>
+    <script src="{% static 'three/js/admin.js' %}"></script>
+    <script src="{% static 'three/js/hr.js' %}"></script>
+</body>
+</html>
