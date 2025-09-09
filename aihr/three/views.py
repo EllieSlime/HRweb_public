@@ -5,6 +5,7 @@ import requests
 import docx2txt
 import fitz
 import os
+import re
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from .models import AdminUser
@@ -80,9 +81,10 @@ def voice_api(request):
             "Content-Type": "application/json",
         }
         chat_payload = {
-            "model": "qwen/qwen3-coder:free",  # замени, если в openrouter другой id
+            "model": "qwen/qwen3-235b-a22b:free",  # замени, если в openrouter другой id
+            #"enable_thinking": False,
             "messages": [
-                {"role": "system", "content": "You are a helpful HR interviewer."},
+                {"role": "system", "content": "Ты - вежливый и профессиональный специалист по подбору персонала, тебя зовут Альфа. Говори от женского лица. Язык общения - русский. Неиспользуй эмоджи."}, #You are a helpful HR interviewer.
                 {"role": "user", "content": user_text},
             ]
         }
@@ -92,6 +94,10 @@ def voice_api(request):
 
         chat_json = chat_resp.json()
         reply_text = chat_json["choices"][0]["message"]["content"]
+
+        # Убираем блок <think>...</think>, если есть
+        reply_text = re.sub(r"<think>.*?</think>", "", reply_text, flags=re.DOTALL).strip()
+
         print(">> Ответ LLM:", reply_text)
 
         # TTS
@@ -176,7 +182,8 @@ def analyze_resume(request):
     """
 
     payload = {
-        "model": "qwen/qwen3-coder:free",
+        "model": "qwen/qwen3-235b-a22b:free",
+        #"enable_thinking": False,
         "messages": [
             {"role": "system", "content": "Ты HR-бот, делающий быстрый отбор кандидатов"},
             {"role": "user", "content": prompt},
@@ -186,6 +193,8 @@ def analyze_resume(request):
     resp = requests.post(chat_url, headers=headers, json=payload)
     try:
         reply = resp.json()["choices"][0]["message"]["content"]
+        # Убираем размышления модели
+        reply = re.sub(r"<think>.*?</think>", "", reply, flags=re.DOTALL).strip()
     except Exception:
         reply = "⚠️ Ошибка: " + resp.text[:200]
 
